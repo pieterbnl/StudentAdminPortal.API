@@ -11,12 +11,12 @@ namespace StudentAdminPortal.API.Repositories
         {
             _context = context;
         }
-        public List<Student> GetStudents()
+        public async Task<List<Student>> GetStudentsAsync()
         {
-            return _context.Student
+            return await _context.Student
                 .Include(nameof(Gender))
                 .Include(nameof(Address))
-                .ToList();
+                .ToListAsync();
             // NOTE: nameof brings in details of the gender, associated with the student, keeping it typesave
         }
     }

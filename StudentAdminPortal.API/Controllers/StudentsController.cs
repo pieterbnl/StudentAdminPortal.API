@@ -19,10 +19,10 @@ namespace StudentAdminPortal.API.Controllers
 
         [HttpGet]
         [Route("[controller]")] // gives controller name: students
-        public IActionResult GetAllStudents()
+        public async Task<IActionResult> GetAllStudentsAsync()
         {
             // set datamodel
-            var students = _studentRepository.GetStudents();
+            var students = await _studentRepository.GetStudentsAsync();
 
             // Create and return mapping            
             return Ok(_mapper.Map<List<Student>>(students));
