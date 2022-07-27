@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using StudentAdminPortal.API.DomainModels;
 using StudentAdminPortal.API.Repositories;
 
@@ -8,15 +9,31 @@ namespace StudentAdminPortal.API.Controllers
     public class StudentsController : Controller
     {
         private readonly IStudentRepository _studentRepository;
+        private readonly IMapper _mapper;
 
-        public StudentsController(IStudentRepository studentRepository)
+        public StudentsController(IStudentRepository studentRepository, IMapper mapper)
         {
             _studentRepository = studentRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("[controller]")] // gives controller name: students
         public IActionResult GetAllStudents()
+        {
+            // set datamodel
+            var students = _studentRepository.GetStudents();
+
+            // Create and return mapping            
+            return Ok(_mapper.Map<List<Student>>(students));
+        }
+    }
+}
+
+
+/* Solution without using automapper
+ * 
+ * public IActionResult GetAllStudents()
         {
             // set datamodel
             var students = _studentRepository.GetStudents(); 
@@ -52,6 +69,4 @@ namespace StudentAdminPortal.API.Controllers
             }
 
             return Ok(domainModelsStudents);
-        }
-    }
-}
+        }*/
