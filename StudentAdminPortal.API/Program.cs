@@ -23,6 +23,18 @@ builder.Services.AddScoped<IStudentRepository, SqlStudentRespository>();
 // resulting in the creation of the maps as specified in AutoMapperProfiles.cs
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+// Create CORS policy and add it to the services
+builder.Services.AddCors((options) =>
+{
+    options.AddPolicy("angularApplication", (builder) =>
+    {
+        builder.WithOrigins("http://localhost:4200")
+        .AllowAnyHeader()
+        .WithMethods("GET", "POST", "PUT", "DELETE")
+        .WithExposedHeaders("*");
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,6 +45,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable CORS policy
+app.UseCors("angularApplication");
 
 app.UseAuthorization();
 
