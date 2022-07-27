@@ -1,4 +1,5 @@
 ﻿using StudentAdminPortal.API.DataModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudentAdminPortal.API.Repositories
 {
@@ -12,7 +13,11 @@ namespace StudentAdminPortal.API.Repositories
         }
         public List<Student> GetStudents()
         {
-            return _context.Student.ToList();
+            return _context.Student
+                .Include(nameof(Gender))
+                .Include(nameof(Address))
+                .ToList();
+            // NOTE: nameof brings in details of the gender, associated with the student, keeping it typesave
         }
     }
 }

@@ -36,7 +36,18 @@ namespace StudentAdminPortal.API.Controllers
                     Email = student.Email,
                     Mobile = student.Mobile,
                     ProfileImageUrl = student.ProfileImageUrl,
-                    GenderId = student.GenderId
+                    GenderId = student.GenderId,
+                    Address = new Address()
+                    {
+                        Id = student.Address.Id,
+                        PhysicalAddress = student.Address.PhysicalAddress,
+                        PostalAddress = student.Address.PostalAddress,
+                    },
+                    Gender = new Gender()
+                    {
+                        Id = student.Gender.Id,
+                        Description = student.Gender.Description
+                    }
                 });
             }
 
