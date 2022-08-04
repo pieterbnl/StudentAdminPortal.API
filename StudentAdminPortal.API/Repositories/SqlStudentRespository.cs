@@ -43,7 +43,7 @@ namespace StudentAdminPortal.API.Repositories
         {
             var existingStudent = await GetStudentAsync(studentId);
             
-            if(existingStudent == null)
+            if(existingStudent != null)
             {
                 existingStudent.FirstName = studentToUpdate.FirstName;
                 existingStudent.LastName = studentToUpdate.LastName;
@@ -59,6 +59,18 @@ namespace StudentAdminPortal.API.Repositories
             }
             
             return null;
+
+            // To check update student in Swagger:
+            //{
+            //    "firstName": "Johny",
+            //    "lastName": "D",
+            //    "dateOfBirth": "1989-06-11T00:00:00",
+            //    "email": "Santos.Valencia@gmaill.com",
+            //    "mobile": 91254684826,
+            //    "genderId": "6f08fab6-c62e-4306-9d77-c82c9c6a23ac",   
+            //    "physicalAddress": null,
+            //    "postalAddress": null
+            //}
         }
     }
 }

@@ -50,7 +50,7 @@ namespace StudentAdminPortal.API.Controllers
             [FromRoute] Guid studentId, 
             [FromBody] UpdateStudentRequest request)
         {
-            // Check if student exists
+            // Check if student exists, if yes, update detail
             if (await _studentRepository.Exists(studentId))
             {                
                 // Student found - update details
