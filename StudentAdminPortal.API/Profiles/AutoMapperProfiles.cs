@@ -22,6 +22,9 @@ namespace StudentAdminPortal.API.Profiles
             // with the exception of Address (1 level down), which needs to be 'after' mapped 
             CreateMap<UpdateStudentRequest, Datamodels.Student>()
                 .AfterMap<UpdateStudentRequestAfterMap>();
+
+            CreateMap<AddStudentRequest, Datamodels.Student>()
+                .AfterMap<AddStudentRequestAfterMap>();
         }
     }
 }

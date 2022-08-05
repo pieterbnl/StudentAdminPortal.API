@@ -39,6 +39,7 @@ namespace StudentAdminPortal.API.Repositories
             // NOTE: nameof brings in details of the gender, associated with the student, keeping it typesave
         }
 
+
         public async Task<Student> UpdateStudent(Guid studentId, Student studentToUpdate)
         {
             var existingStudent = await GetStudentAsync(studentId);
@@ -86,6 +87,14 @@ namespace StudentAdminPortal.API.Repositories
             }
 
             return null;
+        }
+
+        public async Task<Student> AddStudent(Student request)
+        {
+            var student = await _context.Student.AddAsync(request);
+            await _context.SaveChangesAsync();
+
+            return student.Entity;
         }
     }
 }

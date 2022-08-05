@@ -30,7 +30,7 @@ namespace StudentAdminPortal.API.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/{studentId:guid}")]
+        [Route("[controller]/{studentId:guid}"), ActionName("GetStudentAsync")]
         public async Task<IActionResult> GetStudentAsync(
             [FromRoute] Guid studentId)
         {
@@ -68,6 +68,21 @@ namespace StudentAdminPortal.API.Controllers
                 return Ok(_mapper.Map<Student>(student));
             }            
             return NotFound();
+        }
+
+        [HttpPost]
+        [Route("[controller]/Add")]
+
+        public async Task<IActionResult> AddStudentAsync([FromBody] AddStudentRequest request)
+        {
+            var student = await _studentRepository.AddStudent(_mapper.Map<DataModels.Student>(request));
+
+            // Note: createdataction results in a HTTP 201 response code == 'created'
+            return CreatedAtAction(
+                nameof(GetStudentAsync), 
+                new { studentId = student.Id }, 
+                _mapper.Map<Student>(student)
+            );                
         }
     }
 }
