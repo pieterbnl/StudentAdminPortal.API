@@ -11,7 +11,9 @@ namespace StudentAdminPortal.API.Controllers
         private readonly IStudentRepository _studentRepository;
         private readonly IMapper _mapper;
 
-        public StudentsController(IStudentRepository studentRepository, IMapper mapper)
+        public StudentsController(
+            IStudentRepository studentRepository, 
+            IMapper mapper)
         {
             _studentRepository = studentRepository;
             _mapper = mapper;
@@ -21,25 +23,20 @@ namespace StudentAdminPortal.API.Controllers
         [Route("[controller]")] // gives controller name: students
         public async Task<IActionResult> GetAllStudentsAsync()
         {
-            // set datamodel
+            // Set datamodel and create and return mapping
             var students = await _studentRepository.GetStudentsAsync();
 
-            // Create and return mapping            
             return Ok(_mapper.Map<List<Student>>(students));
         }
 
         [HttpGet]
         [Route("[controller]/{studentId:guid}")]
-        public async Task<IActionResult> GetStudentAsync([FromRoute] Guid studentId)
+        public async Task<IActionResult> GetStudentAsync(
+            [FromRoute] Guid studentId)
         {
-            // Fetch student
-            var student = await _studentRepository.GetStudentAsync(studentId);
-
-            // Return student, if found
-            if (student == null)
-            {
-                return NotFound();
-            }
+            // Fetch student and return student, if found
+            var student = await _studentRepository.GetStudentAsync(studentId);            
+            if (student == null) return NotFound();            
                         
             return Ok(_mapper.Map<Student>(student));
         }
@@ -49,21 +46,28 @@ namespace StudentAdminPortal.API.Controllers
         public async Task<IActionResult> UpdateStudentAsync(
             [FromRoute] Guid studentId, 
             [FromBody] UpdateStudentRequest request)
-        {
-            // Check if student exists, if yes, update detail
+        {            
             if (await _studentRepository.Exists(studentId))
             {                
-                // Student found - update details
-                // Map request to DataModels.Student
+                // Map request to DataModels.Student and update student
                 var updatedStudent = await _studentRepository.UpdateStudent(studentId, _mapper.Map<DataModels.Student>(request));
 
-                if(updatedStudent != null) 
-                {
-                    return Ok(_mapper.Map<Student>(updatedStudent));
-                }
+                if(updatedStudent != null) return Ok(_mapper.Map<Student>(updatedStudent));                
             }
             
             return NotFound();            
+        }
+
+        [HttpDelete]
+        [Route("[controller]/{studentId:guid}")]
+        public async Task<IActionResult> DeleteStudentAsync([FromRoute] Guid studentId)
+        {
+            if (await _studentRepository.Exists(studentId))
+            {
+                var student = await _studentRepository.DeleteStudent(studentId);
+                return Ok(_mapper.Map<Student>(student));
+            }            
+            return NotFound();
         }
     }
 }

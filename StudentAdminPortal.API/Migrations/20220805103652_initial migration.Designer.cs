@@ -12,8 +12,8 @@ using StudentAdminPortal.API.DataModels;
 namespace StudentAdminPortal.API.Migrations
 {
     [DbContext(typeof(StudentAdminContext))]
-    [Migration("20220727100342_Initial migration")]
-    partial class Initialmigration
+    [Migration("20220805103652_initial migration")]
+    partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,7 +26,7 @@ namespace StudentAdminPortal.API.Migrations
 
             modelBuilder.Entity("StudentAdminPortal.API.DataModels.Address", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -36,25 +36,25 @@ namespace StudentAdminPortal.API.Migrations
                     b.Property<string>("PostalAddress")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("StudentId")
+                    b.Property<Guid?>("StudentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[StudentId] IS NOT NULL");
 
                     b.ToTable("Address");
                 });
 
             modelBuilder.Entity("StudentAdminPortal.API.DataModels.Gender", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -64,29 +64,26 @@ namespace StudentAdminPortal.API.Migrations
 
             modelBuilder.Entity("StudentAdminPortal.API.DataModels.Student", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("GenderId")
+                    b.Property<Guid?>("GenderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("Mobile")
+                    b.Property<long?>("Mobile")
                         .HasColumnType("bigint");
 
                     b.Property<string>("ProfileImageUrl")
@@ -103,26 +100,21 @@ namespace StudentAdminPortal.API.Migrations
                 {
                     b.HasOne("StudentAdminPortal.API.DataModels.Student", null)
                         .WithOne("Address")
-                        .HasForeignKey("StudentAdminPortal.API.DataModels.Address", "StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentAdminPortal.API.DataModels.Address", "StudentId");
                 });
 
             modelBuilder.Entity("StudentAdminPortal.API.DataModels.Student", b =>
                 {
                     b.HasOne("StudentAdminPortal.API.DataModels.Gender", "Gender")
                         .WithMany()
-                        .HasForeignKey("GenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GenderId");
 
                     b.Navigation("Gender");
                 });
 
             modelBuilder.Entity("StudentAdminPortal.API.DataModels.Student", b =>
                 {
-                    b.Navigation("Address")
-                        .IsRequired();
+                    b.Navigation("Address");
                 });
 #pragma warning restore 612, 618
         }

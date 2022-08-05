@@ -8,6 +8,5 @@
 
         // Navigation property
         public Guid? StudentId { get; set; }
-
     }
 }

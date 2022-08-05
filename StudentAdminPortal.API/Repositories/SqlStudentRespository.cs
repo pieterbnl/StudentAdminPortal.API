@@ -42,8 +42,8 @@ namespace StudentAdminPortal.API.Repositories
         public async Task<Student> UpdateStudent(Guid studentId, Student studentToUpdate)
         {
             var existingStudent = await GetStudentAsync(studentId);
-            
-            if(existingStudent != null)
+
+            if (existingStudent != null)
             {
                 existingStudent.FirstName = studentToUpdate.FirstName;
                 existingStudent.LastName = studentToUpdate.LastName;
@@ -57,7 +57,7 @@ namespace StudentAdminPortal.API.Repositories
                 _context.SaveChangesAsync();
                 return existingStudent;
             }
-            
+
             return null;
 
             // To check update student in Swagger:
@@ -71,6 +71,21 @@ namespace StudentAdminPortal.API.Repositories
             //    "physicalAddress": null,
             //    "postalAddress": null
             //}
+        }
+
+        public async Task<Student> DeleteStudent(Guid studentId)
+        {
+
+            var student = await GetStudentAsync(studentId);
+
+            if (student != null)
+            {
+                _context.Remove(student);
+                await _context.SaveChangesAsync();
+                return student;
+            }
+
+            return null;
         }
     }
 }
