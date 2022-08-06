@@ -10,13 +10,16 @@ namespace StudentAdminPortal.API.Controllers
     {
         private readonly IStudentRepository _studentRepository;
         private readonly IMapper _mapper;
+        private readonly IImageRepository _imageRepository;
 
         public StudentsController(
             IStudentRepository studentRepository, 
-            IMapper mapper)
+            IMapper mapper,
+            IImageRepository imageRepository)
         {
             _studentRepository = studentRepository;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
 
         [HttpGet]
@@ -72,7 +75,6 @@ namespace StudentAdminPortal.API.Controllers
 
         [HttpPost]
         [Route("[controller]/Add")]
-
         public async Task<IActionResult> AddStudentAsync([FromBody] AddStudentRequest request)
         {
             var student = await _studentRepository.AddStudent(_mapper.Map<DataModels.Student>(request));
@@ -83,6 +85,30 @@ namespace StudentAdminPortal.API.Controllers
                 new { studentId = student.Id }, 
                 _mapper.Map<Student>(student)
             );                
+        }
+
+        [HttpPost]
+        [Route("[controller]/{studentId:guid}/upload-image")]
+        public async Task<IActionResult> UploadProfileImage([FromRoute] Guid studentId, IFormFile profileImage)
+        {
+            // Check if student exists
+            if (await _studentRepository.Exists(studentId))
+            {
+                var profileImageFileName = Guid.NewGuid() + Path.GetExtension(profileImage.FileName);
+                
+                // Upload image to local storage
+                var profileImageFilePath = await _imageRepository.UploadProfileImage(profileImage, profileImageFileName);
+
+                // Update profile image path in database
+                await _studentRepository.UpdateProfileImage(studentId, profileImageFilePath);
+                {
+                    return Ok(profileImageFilePath);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error uploading image");
+            }
+
+            return NotFound();            
         }
     }
 }

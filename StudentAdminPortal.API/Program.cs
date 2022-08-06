@@ -17,6 +17,7 @@ builder.Services.AddDbContext<StudentAdminContext>(options =>
 
 // Inject dependencies inside the service - giving an implementation of SqlStudentRespository when called
 builder.Services.AddScoped<IStudentRepository, SqlStudentRespository>();
+builder.Services.AddScoped<IImageRepository, LocalStorageProfileImageRepository>();
 
 // The following will search for the assembly name (= current application),
 // and then search for all automapper profiles, that have inherited from the Profile class,
