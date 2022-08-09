@@ -93,10 +93,10 @@ namespace StudentAdminPortal.API.Controllers
         {
             var validExtensions = new List<string>
             {
-                "jpeg",
-                "jpg",
-                "png",
-                "gif"
+                ".jpeg",
+                ".jpg",
+                ".png",
+                ".gif"
             };
 
             if (profileImage != null && profileImage.Length > 0)
