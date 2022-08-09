@@ -1,4 +1,6 @@
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using StudentAdminPortal.API.DataModels;
 using StudentAdminPortal.API.Repositories;
 
@@ -9,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Note: using fluent validation assembly scanning technique:
+// reading all validators from solution on startup
+builder.Services.AddFluentValidation(
+    fv => fv.RegisterValidatorsFromAssemblyContaining<Program>()
+);
 
 var connectionString = builder.Configuration.GetConnectionString("StudentAdminPortalDb");
 
@@ -46,6 +54,20 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//app.usestaticfiles(new staticfileoptions
+//{
+//    // fileprovider = new physicalfileprovider(path.combine(env.contentrootpath, "resources")),
+//    fileprovider = new physicalfileprovider(path.combine(directory.getcurrentdirectory(), "resources")),
+//    requestpath = "/resources"
+//});
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "resources")),
+    RequestPath = "/resources"
+});
 
 // Enable CORS policy
 app.UseCors("angularApplication");
